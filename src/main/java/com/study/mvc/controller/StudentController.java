@@ -22,6 +22,8 @@ public class StudentController {
 
     @PostMapping("/student")
     public ResponseEntity<?> addStudent(@CookieValue(required = false) String students, @RequestBody Student student) throws JsonProcessingException, UnsupportedEncodingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
         List<Student> studentList = new ArrayList<>();
         int lastId = 0;
 
@@ -29,7 +31,6 @@ public class StudentController {
 
         if(students != null) {
             if(!students.isBlank()) {
-                ObjectMapper objectMapper = new ObjectMapper();
                 for(Object object : objectMapper.readValue(students, List.class)) {
                     Map<String, Object> studentMap = (Map<String, Object>) object;
                     studentList.add(objectMapper.convertValue(studentMap, Student.class));
@@ -41,12 +42,12 @@ public class StudentController {
         student.setStudentId(lastId + 1);
         studentList.add(student);
 
-        ObjectMapper newStudentList = new ObjectMapper();
-        String newStudents = newStudentList.writeValueAsString(studentList);
+        String studentListJson = objectMapper.writeValueAsString(studentList);
 
-        System.out.println(newStudents);
+        System.out.println(studentListJson);
+
         ResponseCookie responseCookie = ResponseCookie
-                .from("students", URLEncoder.encode(newStudents, "UTF-8"))
+                .from("students", URLEncoder.encode(studentListJson, "UTF-8"))
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
