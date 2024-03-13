@@ -1,5 +1,7 @@
 package com.study.mvc.controller;
 
+import com.study.mvc.aop.annotation.ParamsAspect;
+import com.study.mvc.aop.annotation.TimeAspect;
 import com.study.mvc.dto.DBStudyReqDto;
 import com.study.mvc.service.DBStudyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,9 @@ public class DBController {
     @Autowired
     private DBStudyService dbStudyService;
 
+
+    // *(모든 리턴타입) com.study.mvc..*Controller.*(..)
+    @ParamsAspect
     @PostMapping("/insert")
     public ResponseEntity<?> insert(@RequestBody DBStudyReqDto dbStudyReqDto) {
 
@@ -29,6 +34,7 @@ public class DBController {
         return ResponseEntity.ok(dbStudyService.findStudyByName(name));
     }
 
+    @TimeAspect
     @GetMapping("/select/studys")
     public ResponseEntity<?> selectStudyAll() {
         return ResponseEntity.ok(dbStudyService.findAll());
